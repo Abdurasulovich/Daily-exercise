@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Illustration check</title>
+<link rel="stylesheet" href="../css/styles.css">
+<style>
+  body { padding: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(560px, 1fr)); gap: 12px; }
+  .item { background: var(--card); border-radius: 12px; padding: 8px; }
+  .item h3 { font-size: 14px; margin: 0 0 6px; }
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .trio > div { background: var(--bg2); border-radius: 8px; }
+  .trio small { display: block; text-align: center; }
+</style>
+</head>
+<body>
+<div class="grid" id="g"></div>
+<script type="module">
+  import { ILLUSTRATIONS, illustration } from '../js/illustrations.js';
+  const g = document.getElementById('g');
+  const only = new URLSearchParams(location.search).get('only');
+  if (only) g.style.gridTemplateColumns = '1fr';
+  const freeze = (svg, pct) => {
+    const dur = ILLUSTRATIONS[svg.dataset.id].dur || 3.6;
+    svg.querySelectorAll('*').forEach((el) => {
+      el.style.animationDelay = `${-dur * pct}s`;
+      el.style.animationPlayState = 'paused';
+    });
+  };
+  for (const id of Object.keys(ILLUSTRATIONS).filter((k) => !only || only.split(',').includes(k))) {
+    const def = ILLUSTRATIONS[id];
+    const bPct = def.hold === false ? 0.5 : def.work === 'BA' ? 0.56 : 0.44;
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = `<h3>${id}</h3><div class="trio">
+      <div>${illustration(id)}<small>animated</small></div>
+      <div class="a">${illustration(id)}<small>A (start)</small></div>
+      <div class="b">${illustration(id)}<small>B</small></div></div>`;
+    g.append(el);
+    const [, a, b] = el.querySelectorAll('svg');
+    a.dataset.id = b.dataset.id = id;
+    freeze(a, 0.02);
+    freeze(b, bPct);
+  }
+</script>
+</body>
+</html>

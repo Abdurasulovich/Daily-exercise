@@ -1,0 +1,10 @@
+{
+  "name": "mashq-kundaligi",
+  "private": true,
+  "type": "module",
+  "description": "Offline gym diary PWA. No build step; this file only exists to run the tests.",
+  "scripts": {
+    "start": "python -m http.server 8123",
+    "test": "node --test tests/logic.test.mjs"
+  }
+}
